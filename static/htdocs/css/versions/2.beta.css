@@ -1,0 +1,6 @@
+body>header h1:after {
+    color: red;
+    content: "beta";
+    font-size:15px;
+    vertical-align:top;
+}
