@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import json
+import sys
 import urllib
 from datetime import datetime
 
@@ -62,9 +63,7 @@ def find_tweets(htag, date_from, date_to):
     return (_ for _ in tweets)
 
 
-def main():
-    tags = ['#garage48']
-    # tags = ['#douhack']
+def main(tags=[]):
     tweets = fetch_tweets(tags)
     for tweet in tweets:
         # print tweet
@@ -72,4 +71,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1:])
