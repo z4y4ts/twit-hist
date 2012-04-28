@@ -8,7 +8,7 @@ from datetime import datetime
 from pymongo import Connection
 import protection
 
-import data
+# import data
 
 
 def to_datetime(string):
@@ -65,9 +65,8 @@ def find_tweets(htag, date_from, date_to):
 
 def main(tags=[]):
     tweets = fetch_tweets(tags)
-    for tweet in tweets:
-        # print tweet
-        save_tweet('#douhack', tweet)
+    for htag, tweet in tweets.items():
+        save_tweet(htag, tweet)
 
 
 if __name__ == '__main__':
