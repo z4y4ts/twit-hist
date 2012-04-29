@@ -31,6 +31,8 @@ settings = {
     'static_path':os.path.join(os.path.dirname(__file__), "static/htdocs"),
 }
 
+import tornado.options
+tornado.options.parse_command_line()
 application = tornado.web.Application([
     (r"/", HomeHandler),
     (r"/api/v.1/([^/]+)", MainHandler),
@@ -38,4 +40,7 @@ application = tornado.web.Application([
 
 if __name__ == "__main__":
     application.listen(8888)
-    tornado.ioloop.IOLoop.instance().start()
+    ioloop = tornado.ioloop.IOLoop.instance()
+    from tornado import autoreload
+    autoreload.start(ioloop)
+    ioloop.start()
