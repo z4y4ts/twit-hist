@@ -47,8 +47,8 @@ class Crawler(object):
                 raw_tweets += d['results']
                 next_page = d.get('next_page', None)
                 # next_page = None
-                for tweet in raw_tweets:
-                    self.save_tweet(htag, tweet)
+                # for tweet in raw_tweets:
+                #     self.save_tweet(htag, tweet)
             res[htag] = raw_tweets
         return res
 
@@ -74,7 +74,7 @@ class Crawler(object):
         dt_to = {'datetime': {'$lte': date_to}}
         query = {'htags': htag,
                  '$and': [dt_from, dt_to]}
-        tweets = self.db.tweet.find(query)
+        tweets = self.db.tweet.find(query).sort('datetime', -1)
         return [{'date': str(t['datetime']),
                  'image': t['profile_image_url'],
                  'text': t['text']} for t in tweets]
@@ -82,9 +82,9 @@ class Crawler(object):
     def crawl_tweets(self, htag):
         tweets = self.fetch_tweets(htag)
         # tweets = self.fetch_tweets(urllib.unquote(htag))
-        # for htag, tweets in tweets.items():
-        #     for tweet in tweets:
-        #         self.save_tweet(htag, tweet)
+        for htag, tweets in tweets.items():
+            for tweet in tweets:
+                self.save_tweet(htag, tweet)
 
     def graph_data(self, htag, date_from, date_to):
         tweets = self.find_tweets(htag, date_from, date_to)
