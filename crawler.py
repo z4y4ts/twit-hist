@@ -1,9 +1,11 @@
 #!/usr/bin/env python
-
+# -*- coding: utf-8 -*-
 import json
 import sys
 import urllib
-from datetime import datetime, time
+from datetime import datetime
+import time
+import requests
 
 from pymongo import Connection
 
@@ -31,36 +33,39 @@ class Crawler(object):
         res = {}
         for htag in htags:
             url = base_url + urllib.quote(htag)
+            # url = base_url + htag
             print('fetching ', url)
-            d = json.loads(urllib.urlopen(url).read())
+            d = json.loads(requests.get(url).content)
+            print d
             raw_tweets = d['results']
             next_page = d.get('next_page', None)
             while next_page:
                 url = urllib.basejoin(base_url, next_page)
                 print('fetching ', url)
-                d = json.loads(urllib.urlopen(url).read())
+                d = json.loads(requests.get(url).content)
                 raw_tweets += d['results']
                 next_page = d.get('next_page', None)
                 # next_page = None
+                for tweet in raw_tweets:
+                    self.save_tweet(htag, tweet)
             res[htag] = raw_tweets
         return res
 
     def save_tweet(self, htag, tweet):
-        try:
-            tweet_data = {'htags': [htag],
-                          'id': tweet['id'],
-                          'datetime': self.to_datetime(tweet['created_at']),
-                          'from_user': tweet['from_user'],
-                          'profile_image_url': tweet['profile_image_url'],
-                          'text': tweet['text']}
-            db_tweet = self.db.tweet.find_one({'id': tweet_data['id']})
-            if db_tweet:
-                tweet_data['htags'] = list(set(db_tweet['htags']
-                                               + tweet_data['htags']))
-                self.db.tweet.update({'id': tweet_data['id']}, tweet_data)
-            self.db.tweet.insert(tweet_data)
-        except:
-            pass
+        # print 'yo'
+        tweet_data = {'htags': [htag],
+                      'id': tweet['id'],
+                      'datetime': self.to_datetime(tweet['created_at']),
+                      'from_user': tweet['from_user'],
+                      'profile_image_url': tweet['profile_image_url'],
+                      'text': tweet['text']}
+        db_tweet = self.db.tweet.find_one({'id': tweet_data['id']})
+        if db_tweet:
+            tweet_data['htags'] = list(set(db_tweet['htags']
+                                           + tweet_data['htags']))
+            self.db.tweet.update({'id': tweet_data['id']}, tweet_data)
+        self.db.tweet.insert(tweet_data)
+        # print 'done'
 
     def find_tweets(self, htag, date_from, date_to):
         dt_from = {'datetime': {'$gte': date_from}}
@@ -68,9 +73,16 @@ class Crawler(object):
         query = {'htags': htag,
                  '$and': [dt_from, dt_to]}
         tweets = self.db.tweet.find(query)
-        return ({'date': str(t['datetime']),
+        return [{'date': str(t['datetime']),
                  'image': t['profile_image_url'],
-                 'text': t['text']} for t in tweets)
+                 'text': t['text']} for t in tweets]
+
+    def crawl_tweets(self, htag):
+        tweets = self.fetch_tweets(htag)
+        # tweets = self.fetch_tweets(urllib.unquote(htag))
+        # for htag, tweets in tweets.items():
+        #     for tweet in tweets:
+        #         self.save_tweet(htag, tweet)
 
 
 def main(tags=[]):
