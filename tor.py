@@ -23,12 +23,12 @@ class HomeHandler(tornado.web.RequestHandler):
     def get(self):
         self.render('index.html', **{'htag': '#douhack'})
 
-
+static_path = 'static/htdocs/'
 
 settings = {
     'template_path': os.path.join(os.path.dirname(__file__), "templates"),
     'xsrf_cookies': True,
-    'static_path':os.path.join(os.path.dirname(__file__), "static/htdocs"),
+    'static_path':os.path.join(os.path.dirname(__file__), static_path),
 }
 
 import tornado.options
@@ -42,5 +42,7 @@ if __name__ == "__main__":
     application.listen(8888)
     ioloop = tornado.ioloop.IOLoop.instance()
     from tornado import autoreload
+    tornado.autoreload.watch(static_path)
+    tornado.autoreload.watch('templates/index.html')
     autoreload.start(ioloop)
     ioloop.start()
