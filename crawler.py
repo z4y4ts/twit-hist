@@ -63,9 +63,11 @@ class Crawler(object):
                       'raw': tweet}
         db_tweet = self.db.tweet.find_one({'id': tweet_data['id']})
         if db_tweet:
-            tweet_data['htags'] = list(set(db_tweet['htags']
-                                           + tweet_data['htags']))
-            self.db.tweet.update({'id': tweet_data['id']}, tweet_data)
+            return
+            # tweet_data['htags'] = list(set(db_tweet['htags']
+            #                                + tweet_data['htags']))
+            # print 'update'
+            # self.db.tweet.update({'id': tweet_data['id']}, tweet_data)
         self.db.tweet.insert(tweet_data)
         # print 'done'
 
@@ -96,9 +98,14 @@ class Crawler(object):
         print res
         return sorted([[-k, v] for k, v in res.items()])
 
+    def htags(self):
+        return [_ for _ in self.db.tweet.distinct('htags')]
+
 
 def main(tags=[]):
     crawler = Crawler()
+    if not tags:
+        tags = crawler.htags()
     tweets = crawler.fetch_tweets(tags)
     for htag, tweets in tweets.items():
         for tweet in tweets:
