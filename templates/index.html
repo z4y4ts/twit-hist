@@ -65,6 +65,7 @@
 	 			$('#content').show();
 			});
             $.getJSON('/api/graph/'+htag, function(data){
+                alert(data);
                 chart.series[0].setData(data);
           	  });
 			return false
@@ -129,54 +130,35 @@
 	chart = new Highcharts.Chart({
             chart: {
                 renderTo: 'graf',
-                type: 'scatter',
-                zoomType: 'xy'
+                type: 'spline',
+                // zoomType: 'xy'
             },
             title: {
                 text: '#tag'
             },
-            // subtitle: {
-            //     text: 'Source: Heinz  2003'
-            // },
             xAxis: {
-                title: {
-                    text: null
-                },
-                startOnTick: true,
-                endOnTick: true,
-                showLastLabel: true
+                title: 'days ago'
+                // type: 'datetime',
+                // dateTimeLabelFormats: { // don't display the dummy year
+                //     month: '%e. %b',
+                //     year: '%b'
+                // }
             },
             yAxis: {
                 title: {
-                    // enabled: false
-                    text: null
-                }
+                    text: 'Snow depth (m)'
+                },
+                min: 0
             },
-            plotOptions: {
-                scatter: {
-                    marker: {
-                        radius: 5,
-                        states: {
-                            hover: {
-                                enabled: true,
-                                lineColor: 'rgb(100,100,100)'
-                            }
-                        }
-                    },
-                    states: {
-                        hover: {
-                            marker: {
-                                enabled: false
-                            }
-                        }
-                    }
-                }
-            },
+            // tooltip: {
+            //     formatter: function() {
+            //             return '<b>'+ this.series.name +'</b><br/>'+
+            //             Highcharts.dateFormat('%e. %b', this.x) +': '+ this.y +' m';
+            //     }
+            // },
             series: [{
                 name: 'tweets',
-                color: 'rgba(223, 83, 83, .5)',
-                data: [[161.2, 51.6], [167.5, 59.0], [159.5, 49.2], [157.0, 63.0], [155.8, 53.6]]
-    
+                data: null
             }]
         });
           
