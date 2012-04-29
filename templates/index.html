@@ -35,9 +35,6 @@
 		#content {
 			display: none;
 		}
-		.span12 {
-			margin-left: 0;
-		}
 	</style>
 
     <script type="text/javascript">
@@ -91,21 +88,21 @@ $('.typeahead').typeahead();
 		<form class="well form-search">
 		<input type="text" class="span3" style="margin: 0 auto;" data-provide="typeahead" data-items="4" data-source='["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Dakota","North Carolina","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"]'>
       <!--input type="text" placeholder="#tag" class="input-medium search-query typeahead span3" data-provide="typeahead" id="q" name="q" data-source="/autocomplete" data-items="10" data-provide="typeahead" style="margin: 0 auto;" /-->
-   	   <i class="btn search" ><i class="icon icon-search" ></i>&nbsp;Search</i>
+         	   <i class="btn search" ><i class="icon icon-search" ></i>&nbsp;Search</i>
     </form>
 	</div>
 	
 	<div id="content">
-		<div class="span12">
+		<div class="offset1 span12">
 			<div class="show-graph">Show graph</div>
-			<div id="graf" style="display: none"></div>
+			<div id="graf" style="width: 100%; display: none"></div>
 
 			<div id="annual">
 		</div>
 	
 	</div>
 
-	<div class="span12">
+	<div class="offset1 span12">
       <table class="table table-condensed">
         <colgroup>
           <col class="span3">	
@@ -132,22 +129,19 @@ $('.typeahead').typeahead();
             chart: {
                 renderTo: 'graf',
                 type: 'spline',
+                width: 940
                 // zoomType: 'xy'
             },
             title: {
                 text: '#tag'
             },
             xAxis: {
-                title: 'days ago'
-                // type: 'datetime',
-                // dateTimeLabelFormats: { // don't display the dummy year
-                //     month: '%e. %b',
-                //     year: '%b'
-                // }
+                title: 'days ago',
+                categories: [0]
             },
             yAxis: {
                 title: {
-                    text: 'Snow depth (m)'
+                    text: 'tweets'
                 },
                 min: 0
             },
