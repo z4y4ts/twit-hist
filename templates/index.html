@@ -62,7 +62,7 @@
 	 			$('#content').show();
 			});
             $.getJSON('/api/graph/'+htag, function(data){
-                alert(data);
+                // alert(data);
                 chart.series[0].setData(data);
             });
 			return false
