@@ -101,6 +101,10 @@ class Crawler(object):
     def htags(self):
         return [_ for _ in self.db.tweet.distinct('htags')]
 
+    def ensure_indexes(self):
+        self.db.tweet.ensure_index('htags')
+        self.db.tweet.ensure_index('id')
+
 
 def main(tags=[]):
     crawler = Crawler()

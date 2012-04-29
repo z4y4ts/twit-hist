@@ -1,116 +1,116 @@
 <html>
 <head>
-	<title>Twit hipster</title>
-	<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css" />
-	<script type="text/javascript" src="/static/js/jq.js"></script>
-	<script type="text/javascript" src="/static/js/bootstrap.js" ></script>
-	<script type="text/javascript" src="/static/js/bootstrap-typeahead.js" ></script>
-	<script type="text/javascript" src="/static/js/highcharts.js" ></script>
+    <title>Twit hipster</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css" />
+    <script type="text/javascript" src="/static/js/jq.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap.js" ></script>
+    <script type="text/javascript" src="/static/js/bootstrap-typeahead.js" ></script>
+    <script type="text/javascript" src="/static/js/highcharts.js" ></script>
 
-	<style type="text/css">
-		#container form {
-			padding-left: 400px;
-		}
-		#container form input {
-			width: 300px;
-			height: 35px;
-		}
-		.show-graph {
-			width: 90%;
-			text-align: center;
-			color: #fff;
-			padding: 5px 4px;
-			font-size: 1.5em;
-			background-color: #0D5995;
-			border-radius: 5px;
-			margin-left: 50px;
-			margin-bottom: 20px;
-		}
-		.show-graph:hover {
-			cursor: pointer;
-		}
-		#graf {
-			width: 100%;
-		}
-		#content {
-			display: none;
-		}
-	</style>
+    <style type="text/css">
+        #container form {
+            padding-left: 400px;
+        }
+        #container form input {
+            width: 300px;
+            height: 35px;
+        }
+        .show-graph {
+            width: 90%;
+            text-align: center;
+            color: #fff;
+            padding: 5px 4px;
+            font-size: 1.5em;
+            background-color: #0D5995;
+            border-radius: 5px;
+            margin-left: 50px;
+            margin-bottom: 20px;
+        }
+        .show-graph:hover {
+            cursor: pointer;
+        }
+        #graf {
+            width: 100%;
+        }
+        #content {
+            display: none;
+        }
+    </style>
 
     <script type="text/javascript">
-	$('document').ready(function(){
+    $('document').ready(function(){
 
-		$('.show-graph').click(function(){
-			$('#graf').show();
-			$(this).hide();
-		});
-		$('form').submit(function(event){
-			event.preventDefault();
-			$('.search').click();
-		});
-		$('.search').live('click', function(event){
-			htag = encodeURIComponent($('input').val());
-			//	alert(htag);
-			$('.search i').removeClass('icon-search');
-			$('.search i').toggleClass('icon-time');
-			$.getJSON('/api/v.1/'+htag, function(data){
-				$('tbody').html('');
-	 			$.each(data.results, function(index, t){
-	 				$('tbody').append('<tr><td><img src="'+t.image+'" /></td><td>'+t.text+'</td><td>'+t.date+'</td></tr>');
-	 			});
-	 			$('.search i').removeClass('icon-time').addClass('icon-search');
-	 			$('#content').show();
-	 			$(chart.title.element).text(decodeURIComponent(htag));
-			});
+        $('.show-graph').click(function(){
+            $('#graf').show();
+            $(this).hide();
+        });
+        $('form').submit(function(event){
+            event.preventDefault();
+            $('.search').click();
+        });
+        $('.search').live('click', function(event){
+            htag = encodeURIComponent($('input').val());
+            //  alert(htag);
+            $('.search i').removeClass('icon-search');
+            $('.search i').toggleClass('icon-time');
+            $.getJSON('/api/v.1/'+htag, function(data){
+                $('tbody').html('');
+                $.each(data.results, function(index, t){
+                    $('tbody').append('<tr><td><img src="'+t.image+'" /></td><td>'+t.text+'</td><td>'+t.date+'</td></tr>');
+                });
+                $('.search i').removeClass('icon-time').addClass('icon-search');
+                $('#content').show();
+                $(chart.title.element).text(decodeURIComponent(htag));
+            });
             $.getJSON('/api/graph/'+htag, function(data){
                 // alert(data);
                 chart.series[0].setData(data);
-          	  });
-			return false
-	    });
+              });
+            return false
+        });
 
-	    /*$('.typeahead').typeahead({
-	    source: function (typeahead, query) {
-	    	    console.log($('.typeahead').val());
-	            return $.get('/autocomplete', { q: query }, function (data) {
-	                return typeahead.process(data);
-	           });
-	    }
-	    });*/
-	});
-	</script>
-	</head>
+        /*$('.typeahead').typeahead({
+        source: function (typeahead, query) {
+                console.log($('.typeahead').val());
+                return $.get('/autocomplete', { q: query }, function (data) {
+                    return typeahead.process(data);
+               });
+        }
+        });*/
+    });
+    </script>
+    </head>
 
 
 <body>
 
-	<div id="container">
-		<form class="well form-search">
+    <div id="container">
+        <form class="well form-search">
       <input type="text" placeholder="#tag" class="input-medium search-query typeahead span3" data-provide="typeahead" id="q" name="q" data-source="/autocomplete" data-items="10" data-provide="typeahead" style="margin: 0 auto;" />
-   	   <i class="btn search" ><i class="icon icon-search" ></i>&nbsp;Search</i>
+       <i class="btn search" ><i class="icon icon-search" ></i>&nbsp;Search</i>
     </form>
-	</div>
-	
-	<div id="content">
-		<div class="offset1 span12">
-			<div class="show-graph">Show graph</div>
-			<div id="graf" style="width: 100%; display: none"></div>
+    </div>
+    
+    <div id="content">
+        <div class="offset1 span12">
+            <div class="show-graph">Show graph</div>
+            <div id="graf" style="width: 100%; display: none"></div>
 
-			<div id="annual">
-		</div>
-	
-	</div>
+            <div id="annual">
+        </div>
+    
+    </div>
 
-	<div class="offset1 span12">
+    <div class="offset1 span12">
       <table class="table table-condensed">
         <colgroup>
-          <col class="span3">	
+          <col class="span3">   
           <col class="span6">
           <col class="span3">
         </colgroup>
         <thead>
           <tr>
-          	<th>User</th>
+            <th>User</th>
             <th>Tag</th>
             <th>Tweet</th>
           </tr>
@@ -119,12 +119,12 @@
         </tbody>
       </table>
     </div>
-	</div>
+    </div>
 
-	<script type="text/javascript">
-	var chart;
+    <script type="text/javascript">
+    var chart;
 
-	chart = new Highcharts.Chart({
+    chart = new Highcharts.Chart({
             chart: {
                 renderTo: 'graf',
                 type: 'spline',
@@ -135,7 +135,10 @@
                 text: '#tag'
             },
             xAxis: {
-                title: 'days ago',
+                title: {
+                        enabled: true,
+                        text: 'days ago'
+                    },
                 categories: [0]
             },
             yAxis: {
@@ -143,6 +146,13 @@
                     text: 'tweets'
                 },
                 min: 0
+            },
+            legend: {
+                enabled: false  
+            },
+            
+            credits: {
+                enabled: false
             },
             // tooltip: {
             //     formatter: function() {
@@ -156,6 +166,6 @@
             }]
         });
           
-	</script>
+    </script>
 </body>
 </html>
