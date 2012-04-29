@@ -32,6 +32,7 @@ class Crawler(object):
         base_url = 'http://search.twitter.com/search.json?q='
         res = {}
         for htag in htags:
+            print htag
             url = base_url + urllib.quote(htag)
             # url = base_url + htag
             print('fetching ', url)
@@ -83,6 +84,16 @@ class Crawler(object):
         # for htag, tweets in tweets.items():
         #     for tweet in tweets:
         #         self.save_tweet(htag, tweet)
+
+    def graph_data(self, htag, date_from, date_to):
+        tweets = self.find_tweets(htag, date_from, date_to)
+        res = []
+        for t in tweets:
+            dt = datetime.strptime(t['date'], "%Y-%m-%d %H:%M:%S")
+            date = int(dt.strftime('%Y%m%d'))
+            time = int(dt.strftime('%H%M%S'))
+            res.append([date, time])
+        return res
 
 
 def main(tags=[]):
