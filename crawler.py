@@ -59,7 +59,8 @@ class Crawler(object):
                       'datetime': self.to_datetime(tweet['created_at']),
                       'from_user': tweet['from_user'],
                       'profile_image_url': tweet['profile_image_url'],
-                      'text': tweet['text']}
+                      'text': tweet['text'],
+                      'raw': tweet}
         db_tweet = self.db.tweet.find_one({'id': tweet_data['id']})
         if db_tweet:
             tweet_data['htags'] = list(set(db_tweet['htags']
@@ -87,13 +88,13 @@ class Crawler(object):
 
     def graph_data(self, htag, date_from, date_to):
         tweets = self.find_tweets(htag, date_from, date_to)
-        res = []
+        res = {}
         for t in tweets:
             dt = datetime.strptime(t['date'], "%Y-%m-%d %H:%M:%S")
-            date = int(dt.strftime('%Y%m%d'))
-            time = int(dt.strftime('%H%M%S'))
-            res.append([date, time])
-        return res
+            date = (datetime.now() - dt).days
+            res[date] = res.get(date, 0) + 1
+        print res
+        return sorted([[-k, v] for k, v in res.items()])
 
 
 def main(tags=[]):
