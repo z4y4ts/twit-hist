@@ -43,6 +43,6 @@ if __name__ == "__main__":
     ioloop = tornado.ioloop.IOLoop.instance()
     from tornado import autoreload
     tornado.autoreload.watch(static_path)
-    tornado.autoreload.watch('templates/index.html')
+    tornado.autoreload.watch('templates/')
     autoreload.start(ioloop)
     ioloop.start()
