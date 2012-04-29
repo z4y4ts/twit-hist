@@ -63,14 +63,14 @@ class Crawler(object):
             pass
 
     def find_tweets(self, htag, date_from, date_to):
-        conn = Connection()
-        db = conn.twit
         dt_from = {'datetime': {'$gte': date_from}}
         dt_to = {'datetime': {'$lte': date_to}}
         query = {'htags': htag,
                  '$and': [dt_from, dt_to]}
-        tweets = db.tweet.find(query)
-        return (_ for _ in tweets)
+        tweets = self.db.tweet.find(query)
+        return ({'date': str(t['datetime']),
+                 'image': t['profile_image_url'],
+                 'text': t['text']} for t in tweets)
 
 
 def main(tags=[]):
