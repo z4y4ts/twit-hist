@@ -10,6 +10,7 @@ import crawler
 FROM = datetime(2000, 1, 1)
 TO = datetime(2100, 1, 1)
 
+
 class MainHandler(tornado.web.RequestHandler):
     def get(self, htag):
         c = crawler.Crawler()
@@ -32,7 +33,9 @@ class GraphHandler(tornado.web.RequestHandler):
 
 class HomeHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render('index.html', **{'htag': '#douhack'})
+        c = crawler.Crawler()
+        htags = c.htags()
+        self.render('index.html', **{'htags': json.dumps(sorted(htags))})
 
 static_path = 'static/htdocs/'
 

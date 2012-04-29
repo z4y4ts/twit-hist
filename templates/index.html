@@ -65,28 +65,20 @@
             $.getJSON('/api/graph/'+htag, function(data){
                 // alert(data);
                 chart.series[0].setData(data);
-              });
-            return false
-        });
-
-        /*$('.typeahead').typeahead({
-        source: function (typeahead, query) {
-                console.log($('.typeahead').val());
-                return $.get('/autocomplete', { q: query }, function (data) {
-                    return typeahead.process(data);
-               });
-        }
-        });*/
-    });
-    </script>
-    </head>
+          	  });
+			return false
+	    });
+        $('.q').typeahead();
+	});
+	</script>
+	</head>
 
 
 <body>
 
     <div id="container">
         <form class="well form-search">
-      <input type="text" placeholder="#tag" class="input-medium search-query typeahead span3" data-provide="typeahead" id="q" name="q" data-source="/autocomplete" data-items="10" data-provide="typeahead" style="margin: 0 auto;" />
+      <input type="text" placeholder="#tag" class="input-medium search-query typeahead span3" data-provide="typeahead" id="q" name="q" data-source='{{ htags }}' data-items="10" data-provide="typeahead"/>
        <i class="btn search" ><i class="icon icon-search" ></i>&nbsp;Search</i>
     </form>
     </div>
