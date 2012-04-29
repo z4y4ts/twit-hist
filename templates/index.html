@@ -63,9 +63,10 @@
 	 			});
 	 			$('.search i').removeClass('icon-time').addClass('icon-search');
 	 			$('#content').show();
+	 			$(chart.title.element).text(decodeURIComponent(htag));
 			});
             $.getJSON('/api/graph/'+htag, function(data){
-                alert(data);
+                // alert(data);
                 chart.series[0].setData(data);
           	  });
 			return false

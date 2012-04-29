@@ -47,8 +47,8 @@ class Crawler(object):
                 raw_tweets += d['results']
                 next_page = d.get('next_page', None)
                 # next_page = None
-                for tweet in raw_tweets:
-                    self.save_tweet(htag, tweet)
+                # for tweet in raw_tweets:
+                #     self.save_tweet(htag, tweet)
             res[htag] = raw_tweets
         return res
 
@@ -63,9 +63,11 @@ class Crawler(object):
                       'raw': tweet}
         db_tweet = self.db.tweet.find_one({'id': tweet_data['id']})
         if db_tweet:
-            tweet_data['htags'] = list(set(db_tweet['htags']
-                                           + tweet_data['htags']))
-            self.db.tweet.update({'id': tweet_data['id']}, tweet_data)
+            return
+            # tweet_data['htags'] = list(set(db_tweet['htags']
+            #                                + tweet_data['htags']))
+            # print 'update'
+            # self.db.tweet.update({'id': tweet_data['id']}, tweet_data)
         self.db.tweet.insert(tweet_data)
         # print 'done'
 
@@ -74,7 +76,7 @@ class Crawler(object):
         dt_to = {'datetime': {'$lte': date_to}}
         query = {'htags': htag,
                  '$and': [dt_from, dt_to]}
-        tweets = self.db.tweet.find(query)
+        tweets = self.db.tweet.find(query).sort('datetime', -1)
         return [{'date': str(t['datetime']),
                  'image': t['profile_image_url'],
                  'text': t['text']} for t in tweets]
@@ -82,9 +84,9 @@ class Crawler(object):
     def crawl_tweets(self, htag):
         tweets = self.fetch_tweets(htag)
         # tweets = self.fetch_tweets(urllib.unquote(htag))
-        # for htag, tweets in tweets.items():
-        #     for tweet in tweets:
-        #         self.save_tweet(htag, tweet)
+        for htag, tweets in tweets.items():
+            for tweet in tweets:
+                self.save_tweet(htag, tweet)
 
     def graph_data(self, htag, date_from, date_to):
         tweets = self.find_tweets(htag, date_from, date_to)
@@ -96,9 +98,14 @@ class Crawler(object):
         print res
         return sorted([[-k, v] for k, v in res.items()])
 
+    def htags(self):
+        return [_ for _ in self.db.tweet.distinct('htags')]
+
 
 def main(tags=[]):
     crawler = Crawler()
+    if not tags:
+        tags = crawler.htags()
     tweets = crawler.fetch_tweets(tags)
     for htag, tweets in tweets.items():
         for tweet in tweets:
