@@ -53,7 +53,6 @@ class Crawler(object):
         return res
 
     def save_tweet(self, htag, tweet):
-        # print 'yo'
         tweet_data = {'htags': [htag],
                       'id': tweet['id'],
                       'datetime': self.to_datetime(tweet['created_at']),
@@ -62,14 +61,11 @@ class Crawler(object):
                       'text': tweet['text'],
                       'raw': tweet}
         db_tweet = self.db.tweet.find_one({'id': tweet_data['id']})
-        if db_tweet:
-            return
-            # tweet_data['htags'] = list(set(db_tweet['htags']
-            #                                + tweet_data['htags']))
-            # print 'update'
-            # self.db.tweet.update({'id': tweet_data['id']}, tweet_data)
-        self.db.tweet.insert(tweet_data)
-        # print 'done'
+        if not db_tweet:
+            self.db.tweet.insert(tweet_data)
+            return True
+        else:
+            return False
 
     def find_tweets(self, htag, date_from, date_to):
         dt_from = {'datetime': {'$gte': date_from}}
@@ -86,7 +82,10 @@ class Crawler(object):
         # tweets = self.fetch_tweets(urllib.unquote(htag))
         for htag, tweets in tweets.items():
             for tweet in tweets:
-                self.save_tweet(htag, tweet)
+                if not self.save_tweet(htag, tweet):
+                    break
+                else:
+                    print 'Tweet added:',tweet
 
     def graph_data(self, htag, date_from, date_to):
         tweets = self.find_tweets(htag, date_from, date_to)
@@ -111,9 +110,7 @@ def main(tags=[]):
     if not tags:
         tags = crawler.htags()
     tweets = crawler.fetch_tweets(tags)
-    for htag, tweets in tweets.items():
-        for tweet in tweets:
-            crawler.save_tweet(htag, tweet)
+    crawler.crawl_tweets(tags)
 
 if __name__ == '__main__':
     main(sys.argv[1:])

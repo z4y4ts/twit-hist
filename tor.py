@@ -12,16 +12,13 @@ TO = datetime(2100, 1, 1)
 
 
 class MainHandler(tornado.web.RequestHandler):
+    @tornado.web.asynchronous
     def get(self, htag):
         c = crawler.Crawler()
+        c.crawl_tweets([htag])
         tweets = c.find_tweets(htag, FROM, TO)
-        if tweets:
-            self.write(json.dumps({'htag': htag, 'count': len(tweets), 'results': list(tweets)}))
-        else:
-            c.crawl_tweets([htag])
-            tweets = c.find_tweets(htag, FROM, TO)
-            self.write(json.dumps({'htag': htag, 'count': len(tweets), 'results': list(tweets)}))
-
+        self.write(json.dumps({'htag': htag, 'count': len(tweets), 'results': list(tweets)}))
+        self.finish()
 
 class GraphHandler(tornado.web.RequestHandler):
     def get(self, htag):
